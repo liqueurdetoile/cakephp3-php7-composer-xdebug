@@ -1,12 +1,10 @@
 FROM php:7.1-apache
 
-#update apt-get
-RUN apt-get update
-#install the required components
-RUN apt-get install -qqy \
-    git-core \
-    composer \
-    libapache2-mod-php \
+# Install packages and PHP 7
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update -q && apt-get install -qqy \
+	git-core \
+	composer \ 
 	php-mcrypt \
 	php-intl \
 	php-mbstring \
