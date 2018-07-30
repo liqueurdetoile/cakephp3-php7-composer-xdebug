@@ -27,11 +27,11 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 
 # install xdebug for code coverage
-RUN curl -L -o /tmp/xdebug-2.4.1.tgz http://xdebug.org/files/xdebug-2.4.1.tgz \
-    && tar xfz /tmp/xdebug-2.4.1.tgz \
-        && rm -r /tmp/xdebug-2.4.1.tgz \
+RUN curl -L -o /tmp/xdebug-2.6.0.tgz https://xdebug.org/files/xdebug-2.6.0.tgz \
+    && tar xfz /tmp/xdebug-2.6.0.tgz \
+        && rm -r /tmp/xdebug-2.6.0.tgz \
         && docker-php-source extract \
-            && mv xdebug-2.4.1 /usr/src/php/ext/xdebug \
+            && mv xdebug-2.6.0 /usr/src/php/ext/xdebug \
                 && docker-php-ext-install xdebug \
                 && docker-php-source delete
 
