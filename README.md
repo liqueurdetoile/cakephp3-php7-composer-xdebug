@@ -6,7 +6,7 @@ Minimalist deployment for a suitable environment for cakephp 3.x based on :
 - needed PHP extensions : intl, mbstring...
 - xdebug-2.6.0
 
-To run full tests, you must add dev-dependencies to your composer.json as they're zare not included in the docker image.
+To run full tests, you must add dev-dependencies to your composer.json as they're not included in the docker image.
 
 For instance :
 ```
