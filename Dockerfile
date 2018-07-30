@@ -35,24 +35,8 @@ RUN curl -L -o /tmp/xdebug-2.6.0.tgz https://xdebug.org/files/xdebug-2.6.0.tgz \
                 && docker-php-ext-install xdebug \
                 && docker-php-source delete
 
-
-#set our application folder as an environment variable
-ENV APP_HOME /var/www/html
-
 #change uid and gid of apache to docker user uid/gid
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 
-#change the web_root to cakephp /var/www/html/webroot folder
-RUN sed -i -e "s/html/html\/webroot/g" /etc/apache2/sites-enabled/000-default.conf
-
 # enable apache module rewrite
 RUN a2enmod rewrite
-
-#copy source files and run composer
-COPY . $APP_HOME
-
-# install all PHP dependencies
-RUN composer install --no-interaction
-
-#change ownership of our applications
-RUN chown -R www-data:www-data $APP_HOME
