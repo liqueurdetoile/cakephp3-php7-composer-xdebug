@@ -1,29 +1,30 @@
-FROM php:7.1-apache
+#start with our base image (the foundation) - version 7.1.5
+FROM php:7.1.5-apache
 
-# Install packages and PHP 7
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update -q && apt-get install -qqy \
-	git-core \
-	composer \ 
-	php-mcrypt \
-	php-intl \
-	php-mbstring \
-	php-zip \
-	php-xml \
-	php-codesniffer \
-	php-mysql && \
-	# Delete all the apt list files since they're big and get stale quickly
-	rm -rf /var/lib/apt/lists/*
-    
-#install the PHP extensions we need
-RUN docker-php-ext-install pdo_mysql
-RUN docker-php-ext-install mcrypt
-RUN docker-php-ext-install mbstring
-RUN docker-php-ext-install intl
-RUN docker-php-ext-install zip
+#install all the system dependencies and enable PHP modules 
+RUN apt-get update && apt-get install -y \
+      libicu-dev \
+      libpq-dev \
+      libmcrypt-dev \
+      mysql-client \
+      git \
+      zip \
+      unzip \
+    && rm -r /var/lib/apt/lists/* \
+    && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
+    && docker-php-ext-install \
+      intl \
+      mbstring \
+      mcrypt \
+      pcntl \
+      pdo_mysql \
+      pdo_pgsql \
+      pgsql \
+      zip \
+      opcache
 
-#delete the lists for apt-get as the take up space we do not need.
-RUN rm -rf /var/lib/apt/lists/*
+#install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
 
 # install xdebug for code coverage
 RUN curl -L -o /tmp/xdebug-2.4.1.tgz http://xdebug.org/files/xdebug-2.4.1.tgz \
@@ -34,8 +35,24 @@ RUN curl -L -o /tmp/xdebug-2.4.1.tgz http://xdebug.org/files/xdebug-2.4.1.tgz \
                 && docker-php-ext-install xdebug \
                 && docker-php-source delete
 
-# enable apache rewrite
+
+#set our application folder as an environment variable
+ENV APP_HOME /var/www/html
+
+#change uid and gid of apache to docker user uid/gid
+RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+
+#change the web_root to cakephp /var/www/html/webroot folder
+RUN sed -i -e "s/html/html\/webroot/g" /etc/apache2/sites-enabled/000-default.conf
+
+# enable apache module rewrite
 RUN a2enmod rewrite
 
-# set www permissions
-RUN usermod -u 1000 www-data
+#copy source files and run composer
+COPY . $APP_HOME
+
+# install all PHP dependencies
+RUN composer install --no-interaction
+
+#change ownership of our applications
+RUN chown -R www-data:www-data $APP_HOME
