@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
       libicu-dev \
       libpq-dev \
       libmcrypt-dev \
-      mysql-client \
+      mariadb-client \
       git \
       zip \
       unzip \
