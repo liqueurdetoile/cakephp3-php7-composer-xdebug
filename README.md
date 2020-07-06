@@ -1,10 +1,10 @@
 # cakephp3-php7-composer-xdebug
 Minimalist deployment for a suitable environment for cakephp 3.x based on :
 - Apache
-- PHP 7.1.5
+- PHP 7.4.7
 - composer (accessible globally)
 - needed PHP extensions : intl, mbstring...
-- xdebug-2.6.0
+- xdebug-2.9.6
 
 To run full tests, you must add dev-dependencies to your composer.json as they're not included in the docker image.
 
