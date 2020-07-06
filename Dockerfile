@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
       libicu-dev \
       libpq-dev \
       libmcrypt-dev \
+      libonig-dev \
       mariadb-client \
       git \
       zip \
